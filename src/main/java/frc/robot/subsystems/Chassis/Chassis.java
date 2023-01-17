@@ -1,7 +1,10 @@
 package frc.robot.subsystems.Chassis;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -11,6 +14,9 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
@@ -242,6 +248,28 @@ public class Chassis extends SubsystemBase {
         
     }
 
+    public Command followTrajectoryCommand(PathPlannerTrajectory traj, boolean isFirstPath) {
+        return new SequentialCommandGroup(
+            new InstantCommand(() -> {
+
+                if(isFirstPath){
+                    this.resetPoseEstimator(traj.getInitialHolonomicPose());
+                }
+              }),
+              new PPSwerveControllerCommand(
+            traj, 
+            this::getPose,
+            Constants.Kinematics.SWERVE_KINEMATICS,
+            new PIDController(0, 0, 0), 
+            new PIDController(0, 0, 0), 
+            new PIDController(0, 0, 0),
+            this::setModules,
+            true, 
+            this
+        )
+         );
+     }
+
     @Override
     public void periodic() {
         SmartDashboard.putNumber("module 0 angle", swerveModules[0].getAngle());
@@ -274,7 +302,12 @@ public class Chassis extends SubsystemBase {
 
         // }
 
+        // if (NetworkTableInstance.getDefault()
+        // .getTable("limelight").getEntry("tv").getNumber(0)==1) {
+        //     poseEstimatorUpdateByVision(NetworkTableInstance.getDefault()
+        // .getTable("limelight").getEntry("botpose"));
 
+        // }
 
         poseEstimatorUpdate();
         setField(getPose());
