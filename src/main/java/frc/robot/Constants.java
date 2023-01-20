@@ -88,20 +88,20 @@ public final class Constants {
     }
 
     public final static class ChassisConst {
-        public static final int gyro_PORT_NUM = 14;
+        public static final int GYRO_PORT_NUM = 14;
         public final static Translation2d[] wheelsMeters = new Translation2d[] {};
         public static final double ANGLE_2RADPERSEC_Kp = 2;
         public static final double ANGLE_2RADPERSEC_Ki = 0;
         public static final double ANGLE_2RADPERSEC_Kd = 0;
         public static final double ANGLE_PID_DEADBAND_INDEGREES = 1;
 
-        public static final double errorX_2VX_Kp = 0;
-        public static final double errorX_2VX_Ki = 0;
-        public static final double errorX_2VX_Kd = 0;
+        public static final double ERRORX_2VX_Kp = 0;
+        public static final double ERRORX_2VX_Ki = 0;
+        public static final double ERRORX_2VX_Kd = 0;
 
-        public static final double errorY_2VY_Kp = 0;
-        public static final double errorY_2VY_Ki = 0;
-        public static final double errorY_2VY_Kd = 0;
+        public static final double ERRORY_2VY_Kp = 0;
+        public static final double ERRORY_2VY_Ki = 0;
+        public static final double ERRORY_2VY_Kd = 0;
         //pid param for x and y should be the same, but because the robot is a rectangle I thought it's
         //best to seperate.
 
@@ -112,20 +112,26 @@ public final class Constants {
         public static final double AUTONOMOUS_VELOCITY = 0.5;
     }
 
+    public final static class visionConsts {
+        public static final double IMAGE_CAPTURE_LATENCY_MS = 11;
+        public static final double COMUNICATION_LATENCY_MS = 10;
+
+    }
+
     
     public final static class Kinematics {
         // Locations for the swerve drive modules relative to the robot center.
-        public static final double FRONT_RIGHT_LOCATION_X = 0.31515;
-        public static final double FRONT_RIGHT_LOCATION_Y = -0.2715;
+        public static final double FRONT_RIGHT_LOCATION_X = 0.26515;
+        public static final double FRONT_RIGHT_LOCATION_Y = -0.2215;
         
-        public static final double FRONT_LEFT_LOCATION_X = 0.31515;
-        public static final double FRONT_LEFT_LOCATION_Y = 0.2715;
+        public static final double FRONT_LEFT_LOCATION_X = 0.26515;
+        public static final double FRONT_LEFT_LOCATION_Y = 0.2215;
         
-        public static final double BACK_LEFT_LOCATION_X = -0.31515;
-        public static final double BACK_LEFT_LOCATION_Y = 0.2715;
+        public static final double BACK_LEFT_LOCATION_X = -0.26515;
+        public static final double BACK_LEFT_LOCATION_Y = 0.2215;
         
-        public static final double BACK_RIGHT_LOCATION_X = -0.31515;
-        public static final double BACK_RIGHT_LOCATION_Y = -0.2715;
+        public static final double BACK_RIGHT_LOCATION_X = -0.26515;
+        public static final double BACK_RIGHT_LOCATION_Y = -0.2215;
         
         // define modules location
         public static final Translation2d FRONT_LEFT_LOCATION = new Translation2d(FRONT_LEFT_LOCATION_X,

@@ -20,8 +20,8 @@ public class Drive2simple extends CommandBase{
     }
     @Override
     public void initialize() {
-        chassis.setNeutralModeAngle(true);
-        chassis.setNeutralModeVelocity(true);
+        chassis.setNeutralModeSteer(true);
+        chassis.setNeutralModeMove(true);
     }
 
     @Override
@@ -39,8 +39,8 @@ public class Drive2simple extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        chassis.setNeutralModeAngle(false);
-        chassis.setNeutralModeVelocity(false);
+        chassis.setNeutralModeSteer(false);
+        chassis.setNeutralModeMove(false);
     }
     
 }

@@ -76,7 +76,7 @@ public class RobotContainer {
   public static XboxController xBoxController;
 
   public RobotContainer() {
-    gyro = new WPI_PigeonIMU(Constants.ChassisConst.gyro_PORT_NUM);
+    gyro = new WPI_PigeonIMU(Constants.ChassisConst.GYRO_PORT_NUM);
     joystickXY = new Joystick(Constants.Buttons.JOYSTICK_XY_PORT_NUM);
     joystickDirection = new Joystick(Constants.Buttons.JOYSTICK_DIRECTION_PORT_NUM);
     moduleOne = new ModuleOne();

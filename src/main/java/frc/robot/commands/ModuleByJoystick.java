@@ -22,13 +22,13 @@ public class ModuleByJoystick extends CommandBase {
         double powerAngle = Utils.getJoystickY(joystick);
 
         module.setPowerVelocity(powerSpeed);
-        module.setPowerAngle(powerAngle);
+        module.setPowerSteerMotor(powerAngle);
     }
 
     @Override
     public void end(boolean interrupted) {
         module.setPowerVelocity(0);
-        module.setPowerAngle(0);
+        module.setPowerSteerMotor(0);
     }
 
 }

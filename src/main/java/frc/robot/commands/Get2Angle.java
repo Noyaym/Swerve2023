@@ -24,8 +24,8 @@ public class Get2Angle extends CommandBase{
 
     @Override
     public void initialize() {
-        chassis.setNeutralModeAngle(true);
-        chassis.setNeutralModeVelocity(true);
+        chassis.setNeutralModeSteer(true);
+        chassis.setNeutralModeMove(true);
     }
 
     @Override
@@ -44,10 +44,10 @@ public class Get2Angle extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        chassis.setNeutralModeAngle(false);
-        chassis.setNeutralModeVelocity(false);
-        chassis.setPowerAngle(0);
-        chassis.setPowerAngle(0);
+        chassis.setNeutralModeSteer(false);
+        chassis.setNeutralModeMove(false);
+        chassis.setPowerSteer(0);
+        chassis.setPowerSteer(0);
     }
 
     

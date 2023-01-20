@@ -25,8 +25,8 @@ public class XBoxControlwTrigger extends CommandBase{
     @Override
     public void initialize() {
         chassis.calibrateGyro(0);
-        chassis.setNeutralModeAngle(true);
-        chassis.setNeutralModeVelocity(true);
+        chassis.setNeutralModeSteer(true);
+        chassis.setNeutralModeMove(true);
     }
 
     @Override
@@ -53,7 +53,7 @@ public class XBoxControlwTrigger extends CommandBase{
         
         swerveModulesStates = chassis.getModulesOptimize(swerveModulesStates);
         if (vx == 0 && vy == 0 && (rightTriggerVal==0) && (leftTriggerVal==0)) {
-            chassis.setPowerAngle(0);
+            chassis.setPowerSteer(0);
             chassis.setPowerVelocity(0);
         }
         else
@@ -63,8 +63,8 @@ public class XBoxControlwTrigger extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        chassis.setNeutralModeVelocity(false);
-        chassis.setNeutralModeAngle(false);
+        chassis.setNeutralModeMove(false);
+        chassis.setNeutralModeSteer(false);
     }
     
 }

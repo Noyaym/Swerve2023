@@ -19,8 +19,8 @@ public class DriveByXboxController extends CommandBase{
 
     @Override
     public void initialize() {
-        chassis.setNeutralModeAngle(true);
-        chassis.setNeutralModeVelocity(true);
+        chassis.setNeutralModeSteer(true);
+        chassis.setNeutralModeMove(true);
     }
 
     @Override
@@ -42,7 +42,7 @@ public class DriveByXboxController extends CommandBase{
 
         sms = chassis.getModulesOptimize(sms);
         if (vx == 0 && vy == 0 && !isPressedLeft && !isPressedRight) {
-            chassis.setPowerAngle(0);
+            chassis.setPowerSteer(0);
             chassis.setPowerVelocity(0);
         }
         else
@@ -52,8 +52,8 @@ public class DriveByXboxController extends CommandBase{
 
     @Override
     public void end(boolean interrupted) {
-        chassis.setNeutralModeVelocity(false);
-        chassis.setNeutralModeAngle(false);
+        chassis.setNeutralModeMove(false);
+        chassis.setNeutralModeSteer(false);
     }
     
 }

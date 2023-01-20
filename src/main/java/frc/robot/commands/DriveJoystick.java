@@ -32,7 +32,7 @@ public class DriveJoystick extends CommandBase{
         //&& Utils.getOmega(ang)==0
         
         if (vx == 0 && vy == 0 && !isPressed) {
-            chassis.setPowerAngle(0);
+            chassis.setPowerSteer(0);
             chassis.setPowerVelocity(0);
         }
         else

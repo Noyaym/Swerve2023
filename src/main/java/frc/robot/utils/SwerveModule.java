@@ -12,167 +12,243 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.ModuleConst;
 
+/**
+ * utility class, represents one swerve module
+ */
 public class SwerveModule {
 
-    private final TalonFX mVel;
-    private final TalonFX mAngle;
+    private final TalonFX moveMotor;
+    private final TalonFX steerMotor;
     private final CANCoder encoder;
     private final SimpleMotorFeedforward ff;
     private double offset;
 
-    public SwerveModule(double offset, int vel, int angle, int CAN, boolean setInverted) {
-        this.mVel = new WPI_TalonFX(vel);
-        this.mAngle = new WPI_TalonFX(angle);
-        this.encoder = new WPI_CANCoder(CAN);
+    /**
+     * Constructs new swerve module.
+     * @param offset wheel offset
+     * @param moveMotorID id of move motor
+     * @param steerMotorID id of steer motor
+     * @param CANCoderID id of CANConder
+     * @param setInverted is steer motor inverted
+     */
+    public SwerveModule(double offset, int moveMotorID, int steerMotorID, int CANCoderID, boolean setInverted) {
+        this.moveMotor = new WPI_TalonFX(moveMotorID);
+        this.steerMotor = new WPI_TalonFX(steerMotorID);
+        this.encoder = new WPI_CANCoder(CANCoderID);
         this.offset = offset;
 
-        mVel.configFactoryDefault();
-        mAngle.configFactoryDefault();
+        moveMotor.configFactoryDefault();
+        steerMotor.configFactoryDefault();
+        steerMotor.setInverted(setInverted);
+        moveMotor.config_kP(0, ModuleConst.mVel_Kp);
+        moveMotor.config_kI(0, ModuleConst.mVel_Ki);
+        moveMotor.config_kD(0, ModuleConst.mVel_Kd);
 
-        mAngle.setInverted(setInverted);
-
-        mVel.config_kP(0, ModuleConst.mVel_Kp);
-        mVel.config_kI(0, ModuleConst.mVel_Ki);
-        mVel.config_kD(0, ModuleConst.mVel_Kd);
-
-        mAngle.config_kP(0, ModuleConst.mAngle_Kp);
-        mAngle.config_kI(0, ModuleConst.mAngle_Ki);
-        mAngle.config_kD(0, ModuleConst.mAngle_Kd);
-
-        //mAngle.configAllowableClosedloopError(0, 10); TODO: check if works
+        steerMotor.config_kP(0, ModuleConst.mAngle_Kp);
+        steerMotor.config_kI(0, ModuleConst.mAngle_Ki);
+        steerMotor.config_kD(0, ModuleConst.mAngle_Kd);
 
         this.ff = new SimpleMotorFeedforward(ModuleConst.Ks, ModuleConst.Kv);
-
-        // if (isC) {
-        //     calibrate();
-        // }
-
     }
 
+    //steer motor related
+
+    /**
+     * Gets steer motor.
+     * @return steer motor
+     */
+    public TalonFX getSteerMotor() {
+        return steerMotor;
+    }
+
+    /**
+     * Sets neutral mode of steer motor.
+     * @param isBrake is the desired neutral mode brake
+     */
+    public void setNeutraleModeSteerMotor(boolean isBrake) {
+        steerMotor.setNeutralMode(isBrake? NeutralMode.Brake:NeutralMode.Coast);
+    }
+
+    /**
+     * Gets wheel angle (degrees).
+     * @return wheel angle in degrees
+     */
     public double getAngle() {
         double value  = encoder.getAbsolutePosition() - offset;
         if (value<0) value = 360 + value;
         return value;
     }
 
-    
-
+    /**
+     * Gets wheel angle (normalized to 360).
+     * @return normalized wheel angle in degrees
+     */
     public double getAngleNotWithin360() {
         return encoder.getAbsolutePosition() - offset;
     }
 
+    /**
+     * Gets wheel angle (Rotation2ds).
+     * @return wheel angle in Rotation2d
+     */
     public Rotation2d getAngleRotation2d() {
         return Rotation2d.fromDegrees(encoder.getAbsolutePosition() - offset);
     }
 
-
-
-    public double getVel() {
-        return mVel.getSelectedSensorVelocity() / ModuleConst.PULSE_PER_METER * 10;
+    /**
+     * Gets sensor position (pulses) of steer motor.
+     * @return sensor position (pulses) of steer motor
+     */
+    public double getSteerSelectedSensorPosition() {
+        return steerMotor.getSelectedSensorPosition();
     }
 
-    public double getDistance() {
-        return mVel.getSelectedSensorPosition() / ModuleConst.PULSE_PER_METER;
-    }
-
-    public double getOffset() {
-        return offset;
-    }
-
-    public void setVel(double velocity) {
-        mVel.set(ControlMode.Velocity, velocity * ModuleConst.PULSE_PER_METER / 10,
-                DemandType.ArbitraryFeedForward, ff.calculate(velocity));
-    }
-
-
-
+    /**
+     * Converts angle from degrees to motor pulses.
+     * @param angle the desired wheel angle
+     * @return steer motor position in pulses
+     */
     public double convertAngle2Pulse(double angle) {
         return angle * ModuleConst.PULSE_PER_ANGLE;
     }
 
+    /**
+     * Converts offset from degrees to motor pulses.
+     * @param offset the wheel offset
+     * @return offset in pulses
+     */
     public double convertOffset2Pulse() {
         return offset * ModuleConst.PULSE_PER_ANGLE;
     }
 
-    public double calcFF(double angle) {
-        return Math.signum(angle-getAngle())*(10+getAngle())*ModuleConst.mAngle_Kp; // still not sure about that
-    }
-
-    public double FeedForward(double difference) {
+    /**
+     * Calculates feed forward of steer motor.
+     * @param difference the difference between desired wheel angle to current one
+     * @return feed forward value
+     */
+    public double feedForwardSetAngle(double difference) {
         if (Math.abs(difference)<Constants.ModuleConst.TOLERANCE) {
             return 0;
         }
         return Math.signum(difference)*ModuleConst.mAngle_Ks;
     }
 
+    /**
+     * Sets power of steer motor.
+     * @param power desired power for steer motor
+     */
+    public void setPowerSteerMotor(double power) {
+        steerMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    /**
+     * Sets wheel angle.
+     * @param angle desired angle in degrees
+     */
     public void setAngle(double angle) {
         double dif = angle - getAngle();
         double difference = Utils.optimizeAngleDemacia(dif);
-        mAngle.set(ControlMode.Position,
-                mAngle.getSelectedSensorPosition()+convertAngle2Pulse(difference),
+        steerMotor.set(ControlMode.Position,
+                steerMotor.getSelectedSensorPosition()+convertAngle2Pulse(difference),
                 DemandType.ArbitraryFeedForward, 
-                FeedForward(difference));
+                feedForwardSetAngle(difference));
         SmartDashboard.putNumber("difference", difference);
         SmartDashboard.putNumber("angle", angle);
         SmartDashboard.putNumber("selctedSensorPosition", 
-        mAngle.getSelectedSensorPosition()/ModuleConst.PULSE_PER_ANGLE);
+        steerMotor.getSelectedSensorPosition()/ModuleConst.PULSE_PER_ANGLE);
     }
 
-    public void setPowerAngle(double power) {
-        mAngle.set(ControlMode.PercentOutput, power);
+    /**
+     * Gets wheel offset.
+     * @return wheel offset
+     */
+    public double getOffset() {
+        return offset;
     }
 
-    public void setPowerVelocity(double power) {
-        mVel.set(ControlMode.PercentOutput, power);
-    }
+    //move motor related
 
-    public void setNeutraleModeSteerMotor(boolean isBrake) {
-        mAngle.setNeutralMode(isBrake? NeutralMode.Brake:NeutralMode.Coast);
-    }
-
-    public void setNeutraleModeMoveMotor(boolean isBrake) {
-        mVel.setNeutralMode(isBrake? NeutralMode.Brake:NeutralMode.Coast);
-    }
-
+    /**
+     * Gets move motor.
+     * @return move motor
+     */
     public TalonFX getMoveMotor() {
-        return mVel;
+        return moveMotor;
     }
 
+     /**
+     * Sets neutral mode of move motor.
+     * @param isBrake is the desired neutral mode brake
+     */
+    public void setNeutraleModeMoveMotor(boolean isBrake) {
+        moveMotor.setNeutralMode(isBrake? NeutralMode.Brake:NeutralMode.Coast);
+    }
+
+    /**
+     * Gets wheel velocity.
+     * @return wheel velocity
+     */
+    public double getVelocity() {
+        return moveMotor.getSelectedSensorVelocity() / ModuleConst.PULSE_PER_METER * 10;
+    }
+
+    /**
+     * Sets wheel velocity.
+     * @param velocity desired wheel velocity
+     */
+    public void setVel(double velocity) {
+        moveMotor.set(ControlMode.Velocity, velocity * ModuleConst.PULSE_PER_METER / 10,
+                DemandType.ArbitraryFeedForward, ff.calculate(velocity));
+    }
+
+    /**
+     * Sets move motor power.
+     * @param power desired move motor power
+     */
+    public void setPowerVelocity(double power) {
+        moveMotor.set(ControlMode.PercentOutput, power);
+    }
+
+    //additional
+
+    /**
+     * Gets distance driven by wheel.
+     * @return distance driven by wheel
+     */
+    public double getDistance() {
+        return moveMotor.getSelectedSensorPosition() / ModuleConst.PULSE_PER_METER;
+    }
+
+    /**
+     * Gets module state.
+     * @return module state
+     */
     public SwerveModuleState getState() { // gets the state of a module
-        double velocity = getVel();
+        double velocity = getVelocity();
         Rotation2d angle = Rotation2d.fromDegrees(getAngle());
 
         return new SwerveModuleState(velocity, angle);
     }
 
+    /**
+     * Gets module position.
+     * @return module position
+     */
     public SwerveModulePosition getPosition() { // gets the position of a module.
         double distanceDriven = getDistance();
         return new SwerveModulePosition(distanceDriven, getAngleRotation2d());
     }
 
-    public TalonFX getSteerMotor() {
-        return mAngle;
-    }
-
-    public double getSelectedSensorPosition() {
-        return mAngle.getSelectedSensorPosition();
-    }
-
-    // @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Module vel", this::getVel, null);
-        builder.addDoubleProperty("Module angle", this::getAngle, null);
-
-    }
-
+    /**
+     * Calibrates module - sets zero point.
+     */
     public void calibrate() {
         offset = encoder.getAbsolutePosition();
-        mAngle.setSelectedSensorPosition(0);
+        steerMotor.setSelectedSensorPosition(0);
     }
 
 }
