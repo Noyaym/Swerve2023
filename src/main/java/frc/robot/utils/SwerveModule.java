@@ -52,7 +52,7 @@ public class SwerveModule {
         steerMotor.config_kI(0, ModuleConst.mAngle_Ki);
         steerMotor.config_kD(0, ModuleConst.mAngle_Kd);
 
-        this.ff = new SimpleMotorFeedforward(ModuleConst.Ks, ModuleConst.Kv);
+        this.ff = new SimpleMotorFeedforward(ModuleConst.MOVE_MOTOR_Ks, ModuleConst.MOVE_MOTOR_Kv);
     }
 
     //steer motor related
@@ -131,7 +131,7 @@ public class SwerveModule {
      * @return feed forward value
      */
     public double feedForwardSetAngle(double difference) {
-        if (Math.abs(difference)<Constants.ModuleConst.TOLERANCE) {
+        if (Math.abs(difference)<Constants.ModuleConst.TOLERANCE_STEER) {
             return 0;
         }
         return Math.signum(difference)*ModuleConst.mAngle_Ks;

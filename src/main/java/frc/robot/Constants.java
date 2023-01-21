@@ -54,7 +54,8 @@ public final class Constants {
         public static final double mAngle_Ki = 0.00 ;
         public static final double mAngle_Kd = 0.001;
         public static final double mAngle_Ks = 0.035;
-        public static final double TOLERANCE = 0.5;
+
+        public static final double TOLERANCE_STEER = 0.5;
 
 
         public static final double PPR_FALCON = 2048;
@@ -66,8 +67,8 @@ public final class Constants {
         public static final double GEAR_RATIO_ANGLE = 12.8;
         public static final double PULSE_PER_ANGLE = GEAR_RATIO_ANGLE*PPR_FALCON/360;
 
-        public static final double Ks = 0.0479;
-        public static final double Kv = 0.22185;
+        public static final double MOVE_MOTOR_Ks = 0.0479;
+        public static final double MOVE_MOTOR_Kv = 0.22185;
 
     }
 
@@ -83,38 +84,41 @@ public final class Constants {
         public static final int JOYSTICK_DIRECTION_PORT_NUM = 1;
 
         public static final int XBOX_PORT_NUM = 2;
-        public static final double JOYSTICK_RANGE = 0.15;
+        public static final double CONTROLLER_RANGE = 0.15;
 
     }
 
     public final static class ChassisConst {
         public static final int GYRO_PORT_NUM = 14;
         public final static Translation2d[] wheelsMeters = new Translation2d[] {};
-        public static final double ANGLE_2RADPERSEC_Kp = 2;
+
+        public static final double ANGLE_2RADPERSEC_Kp = 3.5;
         public static final double ANGLE_2RADPERSEC_Ki = 0;
         public static final double ANGLE_2RADPERSEC_Kd = 0;
-        public static final double ANGLE_PID_DEADBAND_INDEGREES = 1;
 
-        public static final double ERRORX_2VX_Kp = 0;
+        public static final double ERRORX_2VX_Kp = 0.9;
         public static final double ERRORX_2VX_Ki = 0;
         public static final double ERRORX_2VX_Kd = 0;
 
-        public static final double ERRORY_2VY_Kp = 0;
+        public static final double ERRORY_2VY_Kp = 0.9;
         public static final double ERRORY_2VY_Ki = 0;
         public static final double ERRORY_2VY_Kd = 0;
-        //pid param for x and y should be the same, but because the robot is a rectangle I thought it's
+        //pid param for x and y should be the saOSITIONme, but because the robot is a rectangle I thought it's
         //best to seperate.
 
         public static final double MAX_VELOCITY_XY = 2;
         public static final double MAX_RADPERSEC = 1*Math.PI;
-        public static final double DEADBAND_AUTONOMOUS = 0.4;
-        public static final double DEADBAND_AUTONOMOUS_RAD = 0.1745;
-        public static final double AUTONOMOUS_VELOCITY = 0.5;
+        public static final double DEADBAND_AUTONOMOUS_XY = 0.02;
+        public static final double DEADBAND_AUTONOMOUS_RAD = 0.02*Math.PI;
+        public static final double AUTONOMOUS_VELOCITY = 1;
     }
 
     public final static class visionConsts {
         public static final double IMAGE_CAPTURE_LATENCY_MS = 11;
         public static final double COMUNICATION_LATENCY_MS = 10;
+
+        public static final double LIMELIGHT_X_DISTANCE = 0.3;
+        public static final double LIMELIGHT_Y_DISTANCE = 0;
 
     }
 

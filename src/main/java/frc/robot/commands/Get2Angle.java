@@ -39,7 +39,7 @@ public class Get2Angle extends CommandBase{
     @Override
     public boolean isFinished() {
         return Math.abs(Utils.radianFromDegrees(wantedDegree)-Utils.getGyroPosition(RobotContainer.gyro))<
-        Constants.ChassisConst.ANGLE_PID_DEADBAND_INDEGREES/180*Math.PI;
+        Constants.ChassisConst.DEADBAND_AUTONOMOUS_RAD/180*Math.PI;
     }
 
     @Override

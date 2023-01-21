@@ -33,7 +33,7 @@ public class Utils {
     //functions for controllers:
 
     /**
-     * Get the x value of the joystick. contains deadband and normalization of value.
+     * Gets the x value of the joystick. contains deadband and normalization of value.
      * @param joystick the joystick 
      * @return x value of joystick
      */
@@ -49,7 +49,7 @@ public class Utils {
     }
 
     /**
-     * Get the y value of the joystick. contains deadband and normalization of value.
+     * Gets the y value of the joystick. contains deadband and normalization of value.
      * @param joystick the joystick 
      * @return y value of joystick
      */
@@ -65,7 +65,7 @@ public class Utils {
     }
 
     /**
-     * Get the angle of the joystick in radians. contains deadband.
+     * Gets the angle of the joystick in radians. contains deadband.
      * @param joystick the joystick 
      * @return angle of joystick in radians
      */
@@ -91,7 +91,7 @@ public class Utils {
     }
 
     /**
-     * Get the angle of a specified joystick in xbox controller. contains deadband.
+     * Gets the angle of a specified joystick in xbox controller. contains deadband.
      * @param xboxController the xbox controller
      * @param isLeft is the specified joystick in the controller is left
      * @return the angle of the specified joystick in radians
@@ -119,7 +119,7 @@ public class Utils {
     }
 
     /**
-     * Get the x value of the left joystick in xbox controller. contains deadband and normalization.
+     * Gets the x value of the left joystick in xbox controller. contains deadband and normalization.
      * @param xboxController the xbox controller
      * @return the x value of the left joystick
      */
@@ -137,7 +137,7 @@ public class Utils {
     }
 
     /**
-     * Get the y value of the left joystick in xbox controller. contains deadband and normalization.
+     * Gets the y value of the left joystick in xbox controller. contains deadband and normalization.
      * @param xboxController the xbox controller
      * @return the y value of the left joystick
      */
@@ -154,7 +154,7 @@ public class Utils {
     }
 
     /**
-     * Get the value of left trigger in xbox controller. contains deadband and normalization.
+     * Gets the value of left trigger in xbox controller. contains deadband and normalization.
      * @param xboxController the xbox controller
      * @return value of left trigger
      */
@@ -171,7 +171,7 @@ public class Utils {
     }
 
     /**
-     * Get the value of right trigger in xbox controller. contains deadband and normalization.
+     * Gets the value of right trigger in xbox controller. contains deadband and normalization.
      * @param xboxController the xbox controller
      * @return value of right trigger
      */
@@ -218,14 +218,14 @@ public class Utils {
      * @return true if in range, false if not
      */
     public static boolean isJoystickInRange(double value) {
-        return Math.abs(value) > Constants.Buttons.JOYSTICK_RANGE;
+        return Math.abs(value) > Constants.Buttons.CONTROLLER_RANGE;
 
     }
 
     //helpful calculations
 
     /**
-     * Multiply value by max velocity.
+     * Multiplies value by max velocity.
      * @param value the value
      * @return the value multiplied by max velocity
      */
@@ -243,7 +243,7 @@ public class Utils {
     }
 
     /**
-     * Optimize difference in radians (displaying between -PI to PI).
+     * Optimizes difference in radians (displaying between -PI to PI).
      * @param difference the difference between desired angle and current angle
      * @return the difference optimized in radians
      */
@@ -256,7 +256,7 @@ public class Utils {
     }
 
      /**
-     * Optimize difference (displaying between -180 degrees to 180 degrees).
+     * Optimizes difference (displaying between -180 degrees to 180 degrees).
      * @param difference the difference between desired angle and current angle
      * @return the optimized difference
      */
@@ -269,7 +269,7 @@ public class Utils {
     }
 
     /**
-     * Get Rotation2d of an angle.
+     * Gets Rotation2d of an angle.
      * @param angle angle in degrees
      * @return angle represented as Rotation2d
      */
@@ -278,7 +278,7 @@ public class Utils {
     }
 
     /**
-     * Convert angle from degrees to radians.
+     * Converts angle from degrees to radians.
      * @param degree angle in degrees
      * @return angle in radians
      */
@@ -288,7 +288,7 @@ public class Utils {
     }
 
     /**
-     * Get the angle of a vector.
+     * Gets the angle of a vector.
      * @param x x component of vector
      * @param y y component of vector
      * @return angle of vector in degrees
@@ -301,7 +301,7 @@ public class Utils {
 
     //gyro position
     /**
-     * Get gyro position.
+     * Gets gyro position.
      * @param gyro the gyro
      * @return the gyro position
      */
@@ -313,7 +313,7 @@ public class Utils {
     //calculations of swerve module states
 
     /**
-     * Get swerve module states given the following parameters:
+     * Gets swerve module states given the following parameters:
      * @param vx x component of velocity
      * @param vy y component of velocity
      * @param desiredAngle desired heading of robot (degrees)
@@ -328,10 +328,10 @@ public class Utils {
         SmartDashboard.putNumber("radPerSec (IN PI)", radPerSec/Math.PI);
         Rotation2d currentAngle = Rotation2d.fromDegrees(getGyroPosition(RobotContainer.gyro)); 
         return getModuleStates(vx, vy, radPerSec, currentAngle);
-    }
+    } //TODO: fix 
 
     /**
-     * Get swerve module states given the following parameters:
+     * Gets swerve module states given the following parameters:
      * @param vx x component of velocity
      * @param vy y component of velocity
      * @param radPerSec angular velocity
@@ -346,7 +346,7 @@ public class Utils {
     }
 
     /**
-     * Get swerve module states given the following parameters:
+     * Gets swerve module states given the following parameters:
      * @param vx x component of velocity
      * @param vy y component of velocity
      * @param isPressed is left button pressed in controller
@@ -363,7 +363,7 @@ public class Utils {
     }
 
     /**
-     * Get swerve module states given the following parameters:
+     * Gets swerve module states given the following parameters:
      * @param vx x component of velocity
      * @param vy y component of velocity
      * @param isPressed is right button pressed in controller
@@ -380,7 +380,7 @@ public class Utils {
     }
 
     /**
-     * Get swerve module states given the following parameters:
+     * Gets swerve module states given the following parameters:
      * @param vx x component of velocity
      * @param vy y component of velocity
      * @param triggerVal value of controller trigger
@@ -405,13 +405,16 @@ public class Utils {
      */
     public static SwerveModuleState[] driveToHolonimic(Pose2d currentPose, Pose2d targetPose) {
         double errorX = targetPose.getX() - currentPose.getX();
+        SmartDashboard.putNumber("checkX", errorX);
         double errorY = targetPose.getY() - currentPose.getY();
         double errorRad = targetPose.getRotation().getRadians() - 
         radianFromDegrees(getGyroPosition(RobotContainer.gyro));
         errorRad = optimizeRadDemacia(errorRad);
 
-        double vx = pidX.calculate(errorX);
-        double vy = pidY.calculate(errorY);
+        SmartDashboard.putNumber("error Rad", errorRad);
+
+        double vx = pidX.calculate(-errorX);
+        double vy = pidY.calculate(-errorY);
         double radPerSec = pidRad.calculate(errorRad);
         Rotation2d currentAngle = Rotation2d.fromDegrees(getGyroPosition(RobotContainer.gyro));
 
@@ -433,8 +436,8 @@ public class Utils {
         radianFromDegrees(getGyroPosition(RobotContainer.gyro));
         errorRad = optimizeRadDemacia(errorRad);
 
-        if (Math.abs(errorX) < Constants.ChassisConst.DEADBAND_AUTONOMOUS 
-        && Math.abs(errorY) < Constants.ChassisConst.DEADBAND_AUTONOMOUS && Math.abs(errorRad) 
+        if (Math.abs(errorX) < Constants.ChassisConst.DEADBAND_AUTONOMOUS_XY 
+        && Math.abs(errorY) < Constants.ChassisConst.DEADBAND_AUTONOMOUS_XY && Math.abs(errorRad) 
         < Constants.ChassisConst.DEADBAND_AUTONOMOUS_RAD) {
             return true;
         }
@@ -465,8 +468,6 @@ public class Utils {
         Rotation2d currentAngle = Rotation2d.fromDegrees(getGyroPosition(RobotContainer.gyro));
 
         return getModuleStates(vx, vy, radPerSec, currentAngle);
-
-
     }
 
 }

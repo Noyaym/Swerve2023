@@ -80,7 +80,7 @@ public class RobotContainer {
     joystickXY = new Joystick(Constants.Buttons.JOYSTICK_XY_PORT_NUM);
     joystickDirection = new Joystick(Constants.Buttons.JOYSTICK_DIRECTION_PORT_NUM);
     moduleOne = new ModuleOne();
-    chassis = new Chassis(gyro);
+    chassis = new Chassis();
     button = new JoystickButton(joystickXY, 1);
     xBoxController = new XboxController(Constants.Buttons.XBOX_PORT_NUM);
 

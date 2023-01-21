@@ -1,24 +1,19 @@
 package frc.robot.subsystems.Chassis;
 
 import com.ctre.phoenix.sensors.PigeonIMU;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPSwerveControllerCommand;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -27,8 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.RobotContainer;
-import frc.robot.commands.Get2Angle;
-import frc.robot.commands.XBoxControlwTrigger;
+import frc.robot.commands.Drive2simple;
 import frc.robot.utils.SwerveModule;
 import frc.robot.utils.Utils;
 
@@ -47,9 +41,12 @@ public class Chassis extends SubsystemBase {
 
     /**
      * Constructs a chassis.
-     * @param gyro the gyro
      */
-    public Chassis(PigeonIMU gyro) {
+    public Chassis() {
+
+        SmartDashboard.putNumber("target pose x", 0);
+        SmartDashboard.putNumber("target pose y", 0);
+
         this.field = new Field2d();
 
         swerveModules = new SwerveModule[Constants.NUMBER_OF_WHEELS];
@@ -85,7 +82,7 @@ public class Chassis extends SubsystemBase {
         getRotation2dGyroPosition(), getcurrentModulesPosition(), zeroPose);
         
 
-        setDefaultCommand(new XBoxControlwTrigger(this));
+        //setDefaultCommand(new XBoxControlwTrigger(this));
         calibrateGyro(0);
 
         SmartDashboard.putData("Field", getField());
@@ -95,8 +92,12 @@ public class Chassis extends SubsystemBase {
         // SmartDashboard.putData("Calibrate All", new InstantCommand(() ->
         // calibrateAll(), this).ignoringDisable(true));
 
-        SmartDashboard.putNumber("wanted", 0);
-        SmartDashboard.putData("setRobotAngle", new Get2Angle(this, 90));
+        //SmartDashboard.putNumber("wanted", 0);
+
+        //SmartDashboard.putData("setRobotAngle", new Get2Angle(this, 90));
+        Pose2d targetPose2d = new Pose2d(1, 1, Rotation2d.fromDegrees(90));
+        SmartDashboard.putData("driveTo command", new Drive2simple(this, targetPose2d));
+
 
         limeLightTable = NetworkTableInstance.getDefault().getTable("limelight");
         limeLightPoseEntry = limeLightTable.getEntry("botpose");
@@ -307,9 +308,15 @@ public class Chassis extends SubsystemBase {
       */
      public Pose2d getPoseFromVision() {
         //byte[] poseArr = limeLightPoseEntry.getValue().getRaw();
-        double[] arr = new double[1];
-        double[] poseArr = limeLightPoseEntry.getDoubleArray(arr);
-        return new Pose2d(poseArr[0], poseArr[1], new Rotation2d(poseArr[5]));
+        try {
+            double[] arr = new double[1];
+            double[] poseArr = limeLightPoseEntry.getDoubleArray(arr);
+            return new Pose2d(poseArr[0] - Constants.visionConsts.LIMELIGHT_X_DISTANCE,
+            poseArr[1] - Constants.visionConsts.LIMELIGHT_Y_DISTANCE, new Rotation2d(poseArr[5]));
+        } catch (Exception e) {
+            return new Pose2d();
+        }
+        
      }
 
     /**
@@ -381,12 +388,13 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        SmartDashboard.putNumber("gyro calibrate 2 angle", 0);
+
         
     }
 
     @Override
     public void periodic() {
+
         SmartDashboard.putNumber("module 0 angle", swerveModules[0].getAngle());
         SmartDashboard.putNumber("module 0 speed", swerveModules[0].getVelocity());
 
@@ -408,10 +416,11 @@ public class Chassis extends SubsystemBase {
 
         SmartDashboard.putNumber("current Pose2d x", getPose().getX());
         SmartDashboard.putNumber("current Pose2d y", getPose().getY());
-        SmartDashboard.putNumber("current Pose2d radians", getPose().getRotation().getRadians());
+        SmartDashboard.putNumber("current Pose2d rad i pi", getPose().getRotation().getRadians()/Math.PI);
         
 
         if (isVision()) {
+            SmartDashboard.putNumber("is vision", 0);
             poseEstimatorUpdateByVision(getPoseFromVision());
         }
 
